@@ -70,11 +70,10 @@ class PreProcessing():
 
 	def removePunctuation(self,arr_row):
 	# '''Strips punctuation from list of words'''
-		list_punctuation = ['#', '"','£','$','€', '%', "'", '&', ')', '(', '+', '*', ',',\
-		 '/', '.', ';', ':', '=', '<', '>', '@', '[', ']','-', '_', '\\', '^', '`',\
-		  '{', '}', '|', '~']
-		exclude = set(list_punctuation)
-		str_message = ''.join(ch for ch in self.getMessage(arr_row) if ch not in exclude)
+		exclude = set(string.punctuation)
+		table = string.maketrans("","")
+		str_message = self.getMessage(arr_row).translate(table, string.punctuation)
+		str_message = " ".join(str_message.split())
 		return self.getCategory(arr_row), str_message
 
 	def removeNumbers(self,arr_row):
@@ -121,10 +120,10 @@ class PreProcessing():
 			arr_row = self.removeNumbers(arr_row)
 			arr_row = self.standardizeEmojis(arr_row)
 			arr_row = self.standardizeWords(arr_row)
-			arr_row = self.removeStopwords(arr_row)
-			arr_row = self.removePunctuation(arr_row)
+			# arr_row = self.removeStopwords(arr_row)
 			arr_row = self.separatePunctuation(arr_row)
+			arr_row = self.removePunctuation(arr_row)
 			# print only string not empty
 			if self.getMessage(arr_row):
-				print self.getCategory(arr_row) + ',' + '\'' + self.getMessage(arr_row).strip() + '\''
+				print self.getCategory(arr_row) + ', ' + '\'' + self.getMessage(arr_row).strip() + '\''
 		
