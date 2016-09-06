@@ -110,7 +110,20 @@ class PreProcessing():
 		str_message = str_message.replace(":\'(", "emojitriste")
 		return self.getCategory(arr_row), str_message
 
-	def clean(self):
+	def minimumWordSize(self, arr_row, int_size):
+		list_punctuation = [".",";",":","!","?","/","\\",",","#","@","$","&",")","(","\""]
+		str_message = ' '.join(word for word in self.getMessage(arr_row).split() if len(word) > int_size or word in list_punctuation)
+		return self.getCategory(arr_row), str_message
+
+	def clean(self, str_type):
+		if str_type == 'arff':
+			print "@relation comentarios tap"
+			print ""
+			print "@attribute category {O,E,S,R,P}"
+			print "@attribute message string"
+			print ""
+			print "@data"
+		
 		for arr_row in self.file_comments:
 			arr_row = self.removeURL(arr_row)
 			arr_row = self.htmlParser(arr_row)
@@ -123,7 +136,10 @@ class PreProcessing():
 			# arr_row = self.removeStopwords(arr_row)
 			arr_row = self.separatePunctuation(arr_row)
 			arr_row = self.removePunctuation(arr_row)
+			arr_row = self.minimumWordSize(arr_row, 3)
 			# print only string not empty
 			if self.getMessage(arr_row):
-				print self.getCategory(arr_row) + ', ' + '\'' + self.getMessage(arr_row).strip() + '\''
-		
+				if str_type == 'arff':
+					print self.getCategory(arr_row) + ', ' + '\'' + self.getMessage(arr_row).strip() + '\''
+				elif str_type == 'csv':
+					print self.getCategory(arr_row) + ',' + self.getMessage(arr_row).strip()
